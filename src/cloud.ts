@@ -339,7 +339,11 @@ export class Cloud {
       return response.data
     } catch (error) {
       if (error.response) {
-        throw new Error(`Response code is out of 2xx: ${error.response.status}`)
+        // Add the error message, it can be usefull in detecting what's heppening.
+        throw new Error(
+          `${error.response.statusText} (${error.response.status})`
+        )
+        // throw new Error(`Response code is out of 2xx: ${error.response.status}`)
       }
       throw error
     }
@@ -351,7 +355,10 @@ export class Cloud {
       return response.data
     } catch (error) {
       if (error.response) {
-        throw new Error(`Response code is out of 2xx: ${error.response.status}`)
+        // Add the error message, it can be usefull in detecting what's heppening.
+        throw new Error(
+          `${error.response.statusText} (${error.response.status})`
+        )
       }
       throw error
     }

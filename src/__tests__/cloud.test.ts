@@ -7,6 +7,16 @@ const TOKEN = 'anonymous'
 beforeEach(() => {
   nock.disableNetConnect()
   nock('https://api.nature.global/1/')
+    .get('/users/me')
+    .reply(200, {
+      id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      nickname: 'user name',
+    })
+    .post('/users/me')
+    .reply(200, {
+      id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      nickname: 'nickname',
+    })
     .get('/devices')
     .reply(200, [
       {
@@ -39,6 +49,25 @@ beforeEach(() => {
             value: 21.6,
             created_at: '2019-02-14T06:18:27Z',
           },
+        },
+      },
+    ])
+    .post('/detectappliance')
+    .reply(200, [
+      {
+        model: {
+          id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          manufacturer: 'hitachi',
+          remote_name: 'rar-4z3',
+          name: 'Hitachi AC 002',
+          image: 'ico_ac_1',
+        },
+        params: {
+          temp: '26',
+          mode: 'warm',
+          vol: '4',
+          dir: '',
+          button: '',
         },
       },
     ])
@@ -217,12 +246,30 @@ beforeEach(() => {
     ])
 })
 
+test('#getUser()', async () => {
+  const app = new Cloud(TOKEN)
+  const response = await app.getUser()
+  expect(Object.keys(response)).toEqual(['id', 'nickname'])
+})
+
+test('#updateUser(nickname)', async () => {
+  const app = new Cloud(TOKEN)
+  const nickname = 'nickname'
+  const response = await app.updateUser(nickname)
+  expect(Object.keys(response)).toEqual(['id', 'nickname'])
+  expect(response.nickname).toEqual(nickname)
+})
+
 test('#getDevices()', async () => {
   const app = new Cloud(TOKEN)
   const response = await app.getDevices()
   expect(response).toBeInstanceOf(Array)
   expect(response[0].name).toEqual('Living Room')
 })
+
+// test('#detectAppliance(message)', async () => {})
+
+// test('#getSensorValue()', async () => {})
 
 test('#getAppliances()', async () => {
   const app = new Cloud(TOKEN)
@@ -231,22 +278,22 @@ test('#getAppliances()', async () => {
   expect(response[0].device.name).toEqual('Living Room')
 })
 
-test('#listAircon', async () => {
+// test('#createAppliance(nickname, device, image, model?)', async () => {})
+
+// test('#updateAppliancesOrder(appliances)', async () => {})
+
+// test('#deleteAppliance(applianceId)', async () => {})
+
+// test('#updateAppliance(applianceId, nickname , imageId)', async () => {})
+
+test('#listAircon()', async () => {
   const app = new Cloud(TOKEN)
   const airconList = await app.listAircon()
   // assert.hasAnyKeys(airconList[0], ['id', 'aircon', 'signals'])
   expect(airconList[0]).toHaveProperty('id')
 })
 
-test('#getApplianceSignals', async () => {
-  const app = new Cloud(TOKEN)
-  const airconList = await app.listAircon()
-  const airconId = airconList[0].id
-  const response = await app.getApplianceSignals(airconId)
-  expect(response).toBeInstanceOf(Array)
-})
-
-test('#updateAirconSettings()', async () => {
+test('#updateAirconSettings(applianceId, settings)', async () => {
   const app = new Cloud(TOKEN)
   const airconList = await app.listAircon()
   const airconId = airconList[0].id
@@ -262,3 +309,37 @@ test('#updateAirconSettings()', async () => {
     'updated_at',
   ])
 })
+
+// test('#listTV()', async () => {})
+
+// test('#updateTV(applianceId, button)', async () => {})
+
+// test('#listLight()', async () => {})
+
+// test('#updateLight(applianceId, button)', async () => {})
+
+test('#getApplianceSignals(airconId)', async () => {
+  const app = new Cloud(TOKEN)
+  const airconList = await app.listAircon()
+  const airconId = airconList[0].id
+  const response = await app.getApplianceSignals(airconId)
+  expect(response).toBeInstanceOf(Array)
+})
+
+// test('#createApplianceSignal(applianceId, name, message, imageId)', async () => {})
+
+// test('#updateSignalOrders(applianceId, signalIds)', async () => {})
+
+// test('#updateSignal(signalId, name, imageId)', async () => {})
+
+// test('#deleteSignal(signalId)', async () => {})
+
+// test('#sendSignal(signalId)', async () => {})
+
+// test('#updateDevice(deviceId, name)', async () => {})
+
+// test('#deleteDevice(deviceId)', async () => {})
+
+// test('#updateTemperatureOffset(deviceId, offset)', async () => {})
+
+// test('#updateHumidityOffset(deviceId, offset)', async () => {})

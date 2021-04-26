@@ -4,14 +4,14 @@
   "version": "1.2.3",
   "author": "Yasuaki Uechi <y@uechi.io> (https://uechi.io/)",
   "scripts": {
-    "build": "npm run tsup -- --minify --dts",
+    "build": "npm run tsupCall -- --minify --dts",
     "clean": "shx rm -rf lib",
-    "dev": "npm run tsup -- --watch",
+    "dev": "npm run tsupCall -- --watch",
     "docs": "typedoc --mode file --out docs --excludeExternals --excludePrivate --exclude '**/__tests__/*' src && shx touch ./docs/.nojekyll",
     "prepublishOnly": "npm run clean && npm run build",
     "release": "release-it",
     "test": "jest --coverage",
-    "tsup": "tsup src/index.ts -d lib"
+    "tsupCall": "tsup src/index.ts -d lib"
   },
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
@@ -19,7 +19,7 @@
     "lib"
   ],
   "dependencies": {
-    "axios": "^0.20.0"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.10",
@@ -40,7 +40,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged",
+      "pre-commit": "npx pretty-quick --staged",
       "pre-push": "npm test"
     }
   },
